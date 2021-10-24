@@ -2,6 +2,8 @@ import styles from "./styles.module.scss";
 import io from 'socket.io-client';
 import { api } from '../../services/api';
 import { useEffect, useState } from "react";
+import {MESSAGES_EXAMPLE} from '../../utils/messages'
+import { motion } from "framer-motion"
 
 type Message = {
     id: string;
@@ -12,7 +14,6 @@ type Message = {
     }
 }
 let messagesQueue: Message[] = [];
-
 const socket = io('http://localhost:4000');
 
 socket.on('new_message', (newMessage) => {
@@ -68,7 +69,14 @@ export function MessageList() {
 
       <ul className={styles.messageList}>
               {messages.map(message => {
-                  return (
+                return (
+                  <motion.div initial={{ scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20
+                  }}>
                       <li key={message.id} className={styles.message}>
                           <p className={styles.messageContent}>{message.text}</p>
                     <div className={styles.messageUser}>
@@ -78,6 +86,7 @@ export function MessageList() {
                       <span>{message.user.name}</span>
                     </div>
                   </li>
+                </motion.div>
               );
           })}
         
